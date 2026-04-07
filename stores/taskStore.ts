@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Task, TasksAPI } from '@/lib/api';
+import { Task, TasksAPI } from '../lib/api';
 
 interface TaskStore {
   tasks: Task[];
@@ -17,10 +17,12 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   error: null,
   fetchTasks: async () => {
     set({ isLoading: true, error: null });
+
     try {
       const response = await TasksAPI.getTasks();
       set({ tasks: response.data });
-    } catch  {
+    } catch {
+
       set({ error: 'Failed to fetch tasks' });
     } finally {
       set({ isLoading: false });

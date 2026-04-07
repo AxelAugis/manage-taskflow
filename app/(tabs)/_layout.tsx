@@ -18,6 +18,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="categories"
+        options={{
+          title: 'Categories',
+          tabBarIcon: ({ color, size }) => (
+            <CheckSquare size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',

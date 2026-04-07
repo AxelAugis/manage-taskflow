@@ -1,4 +1,14 @@
 module.exports = {
     presets: ['babel-preset-expo'],
-    plugins: ['@babel/plugin-transform-runtime'],
+    plugins: [
+        '@babel/plugin-transform-runtime',
+        [
+            'module-resolver',
+            {
+                alias: {
+                    '@': '.',
+                },
+            },
+        ],
+    ],
 };

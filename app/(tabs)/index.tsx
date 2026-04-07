@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { useTaskStore } from '@/stores/taskStore';
-import { Plus, Trash2 } from 'lucide-react-native';
+import AddLink from '../components/AddLink';
+import Task from '../components/Task';
+
 
 export default function TasksScreen() {
   const { tasks, isLoading, error, fetchTasks, deleteTask, updateTask } = useTaskStore();
@@ -32,30 +34,20 @@ export default function TasksScreen() {
         data={tasks}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.taskItem}>
-            <Pressable
-              onPress={() => updateTask(item.id, { completed: !item.completed })}
-              style={styles.taskContent}>
-              <Text style={[
-                styles.taskTitle,
-                item.completed && styles.completedTask
-              ]}>
-                {item.title}
-              </Text>
-              <Text style={styles.taskDescription}>{item.description}</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => deleteTask(item.id)}
-              testID={`delete-button-${item.id}`}
-              style={styles.deleteButton}>
-              <Trash2 size={20} color="#FF3B30" />
-            </Pressable>
-          </View>
+          <Task
+            id={item.id}
+            title={item.title}
+            description={item.description}
+            color={item.color}
+            dueDate={item.dueDate}
+            completed={item.completed}
+            category={item.category}
+            onToggleComplete={(id, completed) => updateTask(id, { completed })}
+            onDelete={(id) => deleteTask(id)}
+          />
         )}
       />
-      <Pressable style={styles.fab} testID='add-button'>
-        <Plus size={24} color="#FFFFFF" />
-      </Pressable>
+      <AddLink url="/tasks/add" />
     </View>
   );
 }
@@ -64,56 +56,60 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F2F2F7',
+    paddingTop: 8,
   },
   taskItem: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     backgroundColor: '#FFFFFF',
     padding: 16,
     marginHorizontal: 16,
     marginVertical: 8,
     borderRadius: 12,
+    borderLeftWidth: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
+    elevation: 2,
+    gap: 12,
   },
   taskContent: {
     flex: 1,
   },
   taskTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000000',
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#1C1C1E',
+    marginBottom: 6,
+    letterSpacing: 0.3,
   },
   completedTask: {
     textDecorationLine: 'line-through',
-    color: '#8E8E93',
+    color: '#A9A9A9',
+  },
+  completedDescription: {
+    color: '#C7C7CC',
   },
   taskDescription: {
-    fontSize: 14,
-    color: '#8E8E93',
+    fontSize: 15,
+    color: '#555555',
+    marginBottom: 8,
+    lineHeight: 20,
+  },
+  taskMeta: {
+    flexDirection: 'column',
+    gap: 4,
     marginTop: 4,
+  },
+  taskMetaText: {
+    fontSize: 13,
+    color: '#8E8E93',
+    fontWeight: '500',
   },
   deleteButton: {
     padding: 8,
-  },
-  fab: {
-    position: 'absolute',
-    bottom: 24,
-    right: 24,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#007AFF',
     justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
   },
   errorText: {
     color: '#FF3B30',
